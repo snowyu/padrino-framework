@@ -101,6 +101,11 @@ module Padrino
         return cached_layout_path if cached_layout_path
         has_layout_at_root = Dir["#{views}/#{layout_name}.*"].any?
         layout_path = has_layout_at_root ? layout_name.to_sym : File.join('layouts', layout_name.to_s).to_sym
+        # Check the layout file is exists in sub-app? 
+        # try to use the root project's layout if not
+        # added via riceball
+        has_layout = Dir["#{views}/#{layout_path}.*"].any?
+        layout_path = has_layout ? layout_path : File.join('..', '..', 'app', 'views', layout_path.to_s).to_sym
         @_cached_layout[layout_name] = layout_path unless reload_templates?
         layout_path
       end
