@@ -157,7 +157,10 @@ module Padrino
         candidates  = []
         candidates << app_constant.app_file if app_constant.respond_to?(:app_file) && File.exist?(app_constant.app_file.to_s)
         candidates << Padrino.first_caller if File.identical?(Padrino.first_caller.to_s, Padrino.called_from.to_s)
-        candidates << Padrino.mounted_root(name.downcase, "app.rb")
+        # riceball: find the app folder in mounted_root. the rule:
+        #  folder name = name
+        #  folder name = name.downcase
+        candidates << Padrino.mounted_root(name, "app.rb")
         candidates << Padrino.root("app", "app.rb")
         candidates.find { |candidate| File.exist?(candidate) }
       end
@@ -189,7 +192,14 @@ module Padrino
     #   the root to the mounted apps base directory
     #
     def mounted_root(*args)
-      Padrino.root(@mounted_root ||= "", *args)
+      # modified by riceball for sub-app
+      path = Padrino.root(@mounted_root ||= "", *args)
+      return path if File.exists?(path)
+
+      a = *args
+      a[0] = a[0].downcase if a
+      path = Padrino.root(@mounted_root ||= "", a)
+      return path #if File.exists?(path)
     end
 
     ##
