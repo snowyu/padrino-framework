@@ -17,7 +17,7 @@ module Padrino
   #
   class Server < Rack::Server
     # Server Handlers
-    Handlers = [:thin, :mongrel, :trinidad, :webrick]
+    Handlers = [:thin, :mongrel, :trinidad, :webrick, :mongrel2]
 
     # Starts the application on the available server with specified options.
     def self.start(app, opts={})
