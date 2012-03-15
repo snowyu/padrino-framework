@@ -197,6 +197,11 @@ module Padrino
       return path if File.exists?(path)
 
       a = *args
+      a[0] = a[0].underscore if a
+      path = Padrino.root(@mounted_root ||= "", a)
+      return path if File.exists?(path)
+
+      a = *args
       a[0] = a[0].downcase if a
       path = Padrino.root(@mounted_root ||= "", a)
       return path #if File.exists?(path)
