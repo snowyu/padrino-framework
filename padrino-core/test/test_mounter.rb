@@ -53,6 +53,19 @@ describe "Mounter" do
       assert_equal ["some_namespace/an_app"], Padrino.mounted_apps.map(&:name)
     end
 
+    should 'correctly mount an app with a capitalize folder' do
+      class AnApp < Padrino::Application; end
+      module ::SomeNamespace
+        class AnApp < Padrino::Application; end
+      end
+      Padrino.mount("AnApp").to("/")
+      assert_equal AnApp, Padrino.mounted_apps.first.app_obj
+      assert_equal ["AnApp"], Padrino.mounted_apps.map(&:name)
+      Padrino.mount("some_namespace/AnApp", :app_class => 'SomeNamespace::AnApp').to("/")
+      assert_equal SomeNamespace::AnApp, Padrino.mounted_apps[1].app_obj
+      assert_equal ["AnApp", "some_namespace/AnApp"], Padrino.mounted_apps.map(&:name)
+    end
+
     should 'mount a primary app to root uri' do
       mounter = Padrino.mount("test_app", :app_file => __FILE__).to("/")
       assert_equal "test_app", mounter.name
