@@ -68,7 +68,7 @@ module Padrino
           init
           if opts && opts[:expires_in]
             expires_in = opts[:expires_in].to_i
-            expires_in = Time.new.to_i + expires_in if expires_in < EXPIRES_EDGE
+            expires_in = Time.new.to_i + expires_in if expires_in >= 0 and expires_in < EXPIRES_EDGE
           else
             expires_in = -1
           end
